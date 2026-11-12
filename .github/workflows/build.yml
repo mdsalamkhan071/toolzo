@@ -28,16 +28,21 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          cache: true
 
-      - name: Create Android project files
+      - name: Create Flutter Project
         run: |
-          flutter create --project-name toolzo --org com.toolzo --platforms android /tmp/toolzo
-          cp -R /tmp/toolzo/android ./android
+          flutter create --project-name toolzo --org com.toolzo --platforms android .
 
-      - name: Get dependencies
+      - name: Put App Code in Correct Folder
+        run: |
+          mkdir -p lib
+          cp main.dart lib/main.dart
+
+      - name: Get Dependencies
         run: flutter pub get
 
-      - name: Build APK
+      - name: Build Release APK
         run: flutter build apk --release
 
       - name: Upload APK
@@ -45,3 +50,4 @@ jobs:
         with:
           name: TOOLZO-APK
           path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
